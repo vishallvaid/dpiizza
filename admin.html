@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPizza Admin | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-body {
+            background: #f0f2f5;
+        }
+
+        .sidebar {
+            background: var(--secondary);
+            color: white;
+            height: 100vh;
+            width: 260px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 2rem 1rem;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .order-table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-preparing {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-delivered {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: flex;
+                overflow-x: auto;
+                padding: 1rem;
+            }
+
+            .nav-link {
+                margin-bottom: 0;
+                margin-right: 1rem;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-body">
+    <div class="sidebar">
+        <div class="logo" style="margin-bottom: 2rem; color: white;">
+            <span class="logo-icon">🍕</span>
+            <span class="logo-text" style="color: white;">DPizza Admin</span>
+        </div>
+        <nav>
+            <a href="#" class="nav-link active" id="btnOrders"><i class="fa-solid fa-shopping-basket"></i> Orders</a>
+            <a href="#" class="nav-link" id="btnMenu"><i class="fa-solid fa-utensils"></i> Manage Menu</a>
+            <a href="#" class="nav-link" id="btnCoupons"><i class="fa-solid fa-ticket"></i> Coupons</a>
+            <a href="#" class="nav-link" id="btnCustomers"><i class="fa-solid fa-users"></i> Customers</a>
+        </nav>
+    </div>
+
+    <main class="main-content">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Orders</h3>
+                <p id="totalOrders">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Sales</h3>
+                <p id="totalSales">₹0</p>
+            </div>
+            <div class="stat-card">
+                <h3>New Customers</h3>
+                <p id="totalCustomers">0</p>
+            </div>
+        </div>
+
+        <section id="ordersSection">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Live Orders</h2>
+                <button class="primary-btn" onclick="clearOrders()"
+                    style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #666;">Clear All</button>
+            </div>
+            <div class="order-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status/Tracking</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Orders will be injected -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Menu Management Section -->
+        <section id="menuSection" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Manage Menu</h2>
+                <button class="primary-btn" onclick="showProductForm()">+ Add New Item</button>
+            </div>
+            <div class="order-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menuTableBody">
+                        <!-- Products will be injected -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Product Form Modal -->
+        <div id="productModal" class="overlay hidden" style="background: rgba(0,0,0,0.8);">
+            <div class="overlay-content" style="max-width: 500px; margin: auto; height: auto; border-radius: 20px;">
+                <div class="overlay-header">
+                    <h2 id="modalTitle">Add Product</h2>
+                    <button onclick="hideProductModal()" class="close-btn">&times;</button>
+                </div>
+                <form id="productForm">
+                    <input type="hidden" id="editProductId">
+                    <div class="input-group">
+                        <label>Item Name</label>
+                        <input type="text" id="itemName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Category</label>
+                        <select id="itemCategory"
+                            style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #ddd;">
+                            <option value="veg">Veg</option>
+                            <option value="non-veg">Non-Veg</option>
+                            <option value="sides">Sides</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Price (₹)</label>
+                        <input type="number" id="itemPrice" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Image URL</label>
+                        <input type="text" id="itemImage" placeholder="Paste image link or upload below">
+                        <input type="file" id="itemFile" accept="image/*" style="margin-top: 10px;">
+                    </div>
+                    <div class="input-group">
+                        <label>Description</label>
+                        <textarea id="itemDesc" required></textarea>
+                    </div>
+                    <button type="submit" class="primary-btn full-width">Save Product</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Coupons Section -->
+        <section id="couponsSection" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Discount Coupons</h2>
+                <button class="primary-btn" onclick="showCouponForm()">+ Add Coupon</button>
+            </div>
+            <div class="order-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Discount (%)</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="couponsTableBody">
+                        <!-- Coupons will be injected -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="customersSection" class="hidden">
+            <h2 style="margin-bottom: 1.5rem;">Customers</h2>
+            <div class="order-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Last Address</th>
+                            <th>Total Orders</th>
+                            <th>LTV</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <!-- Customers will be injected -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>

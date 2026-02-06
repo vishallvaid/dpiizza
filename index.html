@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DPizza | Premium Pizza Delivery</title>
+    <meta name="description" content="Order the best pizzas in town with DPizza. No login, lightning fast delivery.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🍕</span>
+                <span class="logo-text">DPizza</span>
+            </div>
+            <div class="header-actions">
+                <button id="profileBtn" class="icon-btn hidden" title="My Profile">
+                    <i class="fa-solid fa-user-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Product details modal -->
+        <div id="productDetailModal" class="overlay hidden">
+            <div class="overlay-content" style="max-height: 90%; border-radius: 30px;">
+                <button onclick="hideProductDetail()" class="close-btn"
+                    style="position: absolute; right: 20px; top: 20px; z-index: 10;">&times;</button>
+                <img id="detailImg" src="" style="width: 100%; height: 250px; object-fit: cover; border-radius: 20px;">
+                <div style="padding: 1.5rem 0;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h2 id="detailName">Item Name</h2>
+                        <span id="detailBadge" class="badge">Veg</span>
+                    </div>
+                    <p id="detailDesc" style="color: #666; margin-bottom: 2rem;"></p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span id="detailPrice"
+                            style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">₹0</span>
+                        <button id="detailAddBtn" class="primary-btn" style="padding: 1rem 2rem;">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main id="mainContent">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Hot & Fresh <br><span class="highlight">Delivered Fast.</span></h1>
+                    <p>No account needed. Just pick and eat.</p>
+                </div>
+            </section>
+
+            <!-- Categories -->
+            <div class="categories-wrapper">
+                <div class="categories" id="categories">
+                    <button class="cat-chip active" data-category="all">All</button>
+                    <button class="cat-chip" data-category="veg">Veg</button>
+                    <button class="cat-chip" data-category="non-veg">Non-Veg</button>
+                    <button class="cat-chip" data-category="sides">Sides</button>
+                </div>
+            </div>
+
+            <!-- Menu Grid -->
+            <section class="menu-section">
+                <div id="menuGrid" class="menu-grid">
+                    <!-- Loading skeleton or items will be injected here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Profile View (Hidden by default) -->
+        <div id="profileView" class="page-view hidden">
+            <div class="page-header">
+                <button class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2>My Profile</h2>
+            </div>
+            <div class="profile-card">
+                <div class="profile-info">
+                    <h3 id="profName">...</h3>
+                    <p id="profPhone">...</p>
+                    <p id="profAddress" class="small">...</p>
+                </div>
+            </div>
+            <div class="history-section">
+                <h3>Order History</h3>
+                <div id="orderHistory" class="history-list">
+                    <!-- History items -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Sidebar/Overlay -->
+        <div id="cartOverlay" class="overlay hidden">
+            <div class="overlay-content">
+                <div class="overlay-header">
+                    <h2>Your Order</h2>
+                    <button id="closeCart" class="close-btn">&times;</button>
+                </div>
+                <div id="cartItems" class="cart-items">
+                    <!-- Cart items -->
+                </div>
+                <div class="checkout-footer">
+                    <div class="total-bar">
+                        <span>Total</span>
+                        <span id="cartTotal">₹0</span>
+                    </div>
+                    <button id="checkoutBtn" class="primary-btn full-width">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Form View -->
+        <div id="checkoutView" class="page-view hidden">
+            <div class="page-header">
+                <button class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2>Checkout</h2>
+            </div>
+            <form id="orderForm" class="delivery-form">
+                <div class="form-section">
+                    <h3>Delivery Details</h3>
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" id="userName" placeholder="John Doe" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" name="phone" id="userPhone" placeholder="9876543210" pattern="[0-9]{10}"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label>Full Address</label>
+                        <textarea name="address" id="userAddress" placeholder="House No, Street Name..."
+                            required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Landmark</label>
+                        <input type="text" name="landmark" id="userLandmark" placeholder="Near Apollo Hospital"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Payment & Discount</h3>
+                    <div class="input-group">
+                        <label>Coupon Code</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="couponInput" placeholder="Enter Code">
+                            <button type="button" onclick="applyCoupon()" class="secondary-btn"
+                                style="padding: 10px;">Apply</button>
+                        </div>
+                        <p id="couponMsg" style="font-size: 0.8rem; margin-top: 5px;"></p>
+                    </div>
+                    <div class="payment-options">
+                        <label class="payment-card">
+                            <input type="radio" name="payment" value="cod" checked>
+                            <div class="card-content">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                                <span>Cash on Delivery</span>
+                            </div>
+                        </label>
+                        <label class="payment-card">
+                            <input type="radio" name="payment" value="online">
+                            <div class="card-content">
+                                <i class="fa-solid fa-credit-card"></i>
+                                <span>UPI / Card</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="primary-btn full-width mt-2">Place Order</button>
+            </form>
+        </div>
+
+        <!-- Success View -->
+        <div id="successView" class="page-view hidden">
+            <div class="success-screen">
+                <div class="success-icon">✅</div>
+                <h2>Order Placed!</h2>
+                <p>Order ID: <span id="successOrderId">#...</span></p>
+                <div class="tracking-mini">
+                    <p>Track your order status live:</p>
+                    <button class="primary-btn mt-2" onclick="trackOrder('current')">Track Live Order</button>
+                </div>
+                <button id="homeBtn" class="secondary-btn mt-2">Back to Menu</button>
+            </div>
+        </div>
+
+        <!-- Tracking View -->
+        <div id="trackingView" class="page-view hidden">
+            <div class="page-header">
+                <button class="back-btn" onclick="hideTracking()"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2>Track Order</h2>
+            </div>
+
+            <div class="tracking-container">
+                <div class="track-card">
+                    <div class="track-header">
+                        <h3 id="trackOrderId">#...</h3>
+                        <span id="trackStatusBadge" class="status-badge status-pending">Pending</span>
+                    </div>
+
+                    <div class="track-stepper">
+                        <div class="step" id="step_pending">
+                            <div class="step-icon"><i class="fa-solid fa-receipt"></i></div>
+                            <div class="step-label">Ordered</div>
+                        </div>
+                        <div class="step" id="step_preparing">
+                            <div class="step-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                            <div class="step-label">Preparing</div>
+                        </div>
+                        <div class="step" id="step_dispatched">
+                            <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                            <div class="step-label">On the Way</div>
+                        </div>
+                        <div class="step" id="step_delivered">
+                            <div class="step-icon"><i class="fa-solid fa-house-chimney-check"></i></div>
+                            <div class="step-label">Delivered</div>
+                        </div>
+                    </div>
+
+                    <div id="trackEstimate" class="track-estimate">
+                        <i class="fa-solid fa-clock"></i> Estimated Delivery: <strong>30-40 mins</strong>
+                    </div>
+                </div>
+
+                <div class="order-items-mini">
+                    <h4>Items in this order</h4>
+                    <div id="trackItemsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Cart FAB -->
+        <div id="cartFab" class="cart-fab hidden">
+            <div class="cart-info">
+                <span id="fabCount">0</span> Items
+                <span class="separator">|</span>
+                <span id="fabTotal">₹0</span>
+            </div>
+            <i class="fa-solid fa-arrow-right"></i>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Version 9+) -->
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
