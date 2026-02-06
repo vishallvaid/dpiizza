@@ -4,134 +4,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPizza Admin | Dashboard</title>
+    <title>DPizza Admin | Master Console</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-body {
-            background: #f0f2f5;
+        :root {
+            --admin-bg: #f4f7fe;
+            --sidebar-width: 260px;
         }
 
+        body.admin-body {
+            background: var(--admin-bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar Glassmorphism */
         .sidebar {
-            background: var(--secondary);
+            background: #111c44;
             color: white;
             height: 100vh;
-            width: 260px;
+            width: var(--sidebar-width);
             position: fixed;
             left: 0;
             top: 0;
             padding: 2rem 1rem;
+            z-index: 1000;
         }
 
         .main-content {
-            margin-left: 260px;
-            padding: 2rem;
+            margin-left: var(--sidebar-width);
+            padding: 2.5rem;
+            min-height: 100vh;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 1rem;
-            color: #ccc;
+            padding: 1rem 1.5rem;
+            color: #a3b1cc;
             text-decoration: none;
-            border-radius: 12px;
-            margin-bottom: 0.5rem;
+            border-radius: 15px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
         }
 
         .nav-link.active {
             background: var(--primary);
             color: white;
+            box-shadow: 0 10px 20px rgba(255, 77, 0, 0.2);
         }
 
+        /* Stats Blocks */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .stat-card {
             background: white;
             padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
-        .stat-card h3 {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.5rem;
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: #f4f7fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
         }
 
-        .stat-card p {
+        .stat-info h3 {
+            font-size: 0.85rem;
+            color: #a3b1cc;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-info p {
             font-size: 1.8rem;
             font-weight: 800;
+            margin: 0;
+            color: #2b3674;
         }
 
-        .order-table-container {
+        /* Data Tables */
+        .data-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 1.5rem;
-            overflow-x: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0 10px;
         }
 
         th {
             text-align: left;
+            color: #a3b1cc;
             padding: 1rem;
-            color: #666;
-            font-size: 0.9rem;
-            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
         }
 
         td {
             padding: 1rem;
-            border-bottom: 1px solid #eee;
-            font-size: 0.95rem;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.8rem;
+            background: white;
+            border-top: 1px solid #f4f7fe;
+            border-bottom: 1px solid #f4f7fe;
+            color: #2b3674;
             font-weight: 600;
         }
 
-        .status-pending {
-            background: #fff3e0;
-            color: #ef6c00;
+        td:first-child {
+            border-left: 1px solid #f4f7fe;
+            border-radius: 15px 0 0 15px;
         }
 
-        .status-preparing {
-            background: #e3f2fd;
-            color: #1976d2;
+        td:last-child {
+            border-right: 1px solid #f4f7fe;
+            border-radius: 0 15px 15px 0;
         }
 
-        .status-delivered {
-            background: #e8f5e9;
-            color: #2e7d32;
+        /* Premium Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 30px;
+            padding: 2.5rem;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-header h2 {
+            font-weight: 800;
+            color: #2b3674;
+            margin: 0;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 700;
+            color: #2b3674;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 15px;
+            border: 2px solid #f4f7fe;
+            background: #f4f7fe;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: white;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            width: 100%;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 77, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .save-btn:active {
+            transform: scale(0.98);
         }
 
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: fixed;
                 bottom: 0;
                 top: auto;
-                left: 0;
-                display: flex;
-                flex-direction: row;
-                overflow-x: auto;
                 padding: 0.5rem;
-                z-index: 1000;
-                box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+                flex-direction: row;
+                display: flex;
             }
 
             .sidebar .logo {
@@ -146,19 +269,19 @@
 
             .nav-link {
                 margin-bottom: 0;
-                padding: 0.5rem;
                 flex-direction: column;
                 font-size: 0.7rem;
-                gap: 5px;
-            }
-
-            .nav-link i {
-                font-size: 1.2rem;
+                padding: 0.5rem;
+                text-align: center;
             }
 
             .main-content {
                 margin-left: 0;
-                padding: 1rem 1rem 5rem 1rem;
+                padding: 1.5rem 1.5rem 6rem 1.5rem;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -166,181 +289,194 @@
 
 <body class="admin-body">
     <div class="sidebar">
-        <div class="logo" style="margin-bottom: 2rem; color: white;">
-            <span class="logo-icon">🍕</span>
-            <span class="logo-text" style="color: white;">DPizza Admin</span>
+        <div class="logo" style="margin-bottom: 2rem; text-align: center;">
+            <span style="font-size: 2rem;">🍕</span>
+            <div style="font-weight: 800; color: white;">DPizza Admin</div>
         </div>
         <nav>
-            <a href="#" class="nav-link active" id="btnOrders"><i class="fa-solid fa-shopping-basket"></i> Orders</a>
-            <a href="#" class="nav-link" id="btnMenu"><i class="fa-solid fa-utensils"></i> Manage Menu</a>
-            <a href="#" class="nav-link" id="btnCoupons"><i class="fa-solid fa-ticket"></i> Coupons</a>
+            <a href="#" class="nav-link active" id="btnOrders"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
+            <a href="#" class="nav-link" id="btnMenu"><i class="fa-solid fa-pizza-slice"></i> Menu</a>
+            <a href="#" class="nav-link" id="btnCoupons"><i class="fa-solid fa-tags"></i> Coupons</a>
             <a href="#" class="nav-link" id="btnCustomers"><i class="fa-solid fa-users"></i> Customers</a>
         </nav>
     </div>
 
     <main class="main-content">
+        <!-- Stats Row -->
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total Orders</h3>
-                <p id="totalOrders">0</p>
+                <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+                <div class="stat-info">
+                    <h3>Total Sales</h3>
+                    <p id="totalSales">₹0</p>
+                </div>
             </div>
             <div class="stat-card">
-                <h3>Total Sales</h3>
-                <p id="totalSales">₹0</p>
+                <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
+                <div class="stat-info">
+                    <h3>Orders</h3>
+                    <p id="totalOrders">0</p>
+                </div>
             </div>
             <div class="stat-card">
-                <h3>New Customers</h3>
-                <p id="totalCustomers">0</p>
+                <div class="stat-icon"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="stat-info">
+                    <h3>Customers</h3>
+                    <p id="totalCustomers">0</p>
+                </div>
             </div>
         </div>
 
+        <!-- Orders View -->
         <section id="ordersSection">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>Live Orders</h2>
-                <button class="primary-btn" onclick="clearOrders()"
-                    style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #666;">Clear All</button>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h2 style="font-weight: 800; color: #2b3674;">Live Orders</h2>
+                <button onclick="clearOrders()"
+                    style="background: #e1e9f8; border: none; padding: 0.6rem 1rem; border-radius: 10px; font-weight: 700; color: #555;">Clear
+                    Lists</button>
             </div>
-            <div class="order-table-container">
+            <div class="data-card">
                 <table>
                     <thead>
                         <tr>
-                            <th>Order ID</th>
+                            <th>ID</th>
                             <th>Customer</th>
                             <th>Items</th>
                             <th>Total</th>
-                            <th>Status/Tracking</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="ordersTableBody">
-                        <!-- Orders will be injected -->
-                    </tbody>
+                    <tbody id="ordersTableBody"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Menu Management Section -->
+        <!-- Menu View -->
         <section id="menuSection" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>Manage Menu</h2>
-                <button class="primary-btn" onclick="showProductForm()">+ Add New Item</button>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h2 style="font-weight: 800; color: #2b3674;">Manage Menu</h2>
+                <button class="save-btn" onclick="showProductForm()" style="width: auto; padding: 0.6rem 1.5rem;">+ New
+                    Pizza</button>
             </div>
-            <div class="order-table-container">
+            <div class="data-card">
                 <table>
                     <thead>
                         <tr>
-                            <th>Image</th>
+                            <th>Img</th>
                             <th>Name</th>
                             <th>Category</th>
                             <th>Price</th>
+                            <th>Rating</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="menuTableBody">
-                        <!-- Products will be injected -->
-                    </tbody>
+                    <tbody id="menuTableBody"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Product Form Modal -->
-        <div id="productModal" class="overlay hidden" style="background: rgba(0,0,0,0.8);">
-            <div class="overlay-content" style="max-width: 500px; margin: auto; height: auto; border-radius: 20px;">
-                <div class="overlay-header">
-                    <h2 id="modalTitle">Add Product</h2>
-                    <button onclick="hideProductModal()" class="close-btn">&times;</button>
-                </div>
-                <form id="productForm" style="display: flex; flex-direction: column; gap: 0.8rem;">
-                    <input type="hidden" id="editProductId">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div class="input-group">
-                            <label>Item Name</label>
-                            <input type="text" id="itemName" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Category</label>
-                            <select id="itemCategory"
-                                style="width: 100%; padding: 0.8rem; border-radius: 12px; border: 1px solid #ddd;">
-                                <option value="veg">Veg</option>
-                                <option value="non-veg">Non-Veg</option>
-                                <option value="sides">Sides</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div class="input-group">
-                            <label>Price (₹)</label>
-                            <input type="number" id="itemPrice" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Rating (1-5)</label>
-                            <input type="number" id="itemRating" step="0.1" value="4.5" required>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Image URLs (One per line)</label>
-                        <textarea id="itemImages" placeholder="Paste 3-4 image links here..." rows="3"
-                            required></textarea>
-                    </div>
-                    <div class="input-group">
-                        <label>Description</label>
-                        <textarea id="itemDesc" rows="2" required></textarea>
-                    </div>
-                    <div class="input-group">
-                        <label>Fake Reviews (JSON Array format for demo)</label>
-                        <textarea id="itemReviews" rows="2"
-                            placeholder='[{"user": "Ali", "comment": "Amazing!"}, {"user": "Sarah", "comment": "Fresh!"}]'></textarea>
-                    </div>
-                    <button type="submit" class="primary-btn full-width" style="margin-top: 10px;">Save Item</button>
-                    <button type="button" onclick="hideProductModal()" class="secondary-btn full-width"
-                        style="background: #999;">Cancel</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Coupons Section -->
+        <!-- Coupons & Customers sections (similar structure) -->
         <section id="couponsSection" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>Discount Coupons</h2>
-                <button class="primary-btn" onclick="showCouponForm()">+ Add Coupon</button>
-            </div>
-            <div class="order-table-container">
-                <table>
+            <h2 style="font-weight: 800; color: #2b3674; margin-bottom: 1.5rem;">Coupons</h2>
+            <button class="save-btn" onclick="showCouponForm()" style="width: auto; margin-bottom: 1rem;">+ Add Coupon
+                Code</button>
+            <div class="data-card">
+                <table id="couponsTable">
                     <thead>
                         <tr>
                             <th>Code</th>
-                            <th>Discount (%)</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Discount</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="couponsTableBody">
-                        <!-- Coupons will be injected -->
-                    </tbody>
+                    <tbody id="couponsTableBody"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="customersSection" class="hidden">
-            <h2 style="margin-bottom: 1.5rem;">Customers</h2>
-            <div class="order-table-container">
+            <h2 style="font-weight: 800; color: #2b3674; margin-bottom: 1.5rem;">Customer CRM</h2>
+            <div class="data-card">
                 <table>
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Phone</th>
-                            <th>Last Address</th>
-                            <th>Total Orders</th>
-                            <th>LTV</th>
+                            <th>Address</th>
+                            <th>Orders</th>
+                            <th>Spend</th>
                         </tr>
                     </thead>
-                    <tbody id="customersTableBody">
-                        <!-- Customers will be injected -->
-                    </tbody>
+                    <tbody id="customersTableBody"></tbody>
                 </table>
             </div>
         </section>
     </main>
+
+    <!-- Master Modal for Products -->
+    <div id="productModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Edit Product</h2>
+                <button onclick="hideProductModal()"
+                    style="background: none; border: none; font-size: 1.5rem;">&times;</button>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="editProductId">
+
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label>Pizza Name</label>
+                        <input type="text" id="itemName" placeholder="e.g. Veggie Supreme" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="itemCategory">
+                            <option value="veg">Veg</option>
+                            <option value="non-veg">Non-Veg</option>
+                            <option value="sides">Sides</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" id="itemPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Rating Display (e.g. 4.8)</label>
+                        <input type="number" step="0.1" id="itemRating" value="4.5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Catalog Images (Select 3-4 images from Gallery)</label>
+                    <input type="file" id="itemFiles" accept="image/*" multiple
+                        style="margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 10px; width: 100%;">
+                    <div id="imagePreview"
+                        style="display: flex; gap: 10px; overflow-x: auto; padding: 15px; background: #f8f9fe; border-radius: 15px; min-height: 80px; border: 2px dashed #e1e9f8;">
+                        <span style="color: #a3b1cc; font-size: 0.8rem; margin: auto;">No images uploaded</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Item Description (Detailed)</label>
+                    <textarea id="itemDesc" rows="3" placeholder="Tell customers what's in this delicious pizza..."
+                        required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Reviews JSON (Optional Demo format)</label>
+                    <textarea id="itemReviews" rows="2"
+                        placeholder='[{"user":"Rahul","comment":"Best ever!"}]'></textarea>
+                </div>
+
+                <button type="submit" class="save-btn">SAVE PRODUCT CHANGES</button>
+            </form>
+        </div>
+    </div>
 
     <script src="admin.js"></script>
 </body>
