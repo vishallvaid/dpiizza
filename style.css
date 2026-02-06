@@ -621,3 +621,11 @@ body {
     border-bottom: 1px solid #f5f5f5;
     font-size: 0.9rem;
 }
+
+/* Blinking Track Icon */
+.track-blink { position: fixed; top: 1rem; right: 1rem; background: #FF4D00; color: white; padding: 10px 20px; border-radius: 50px; font-weight: bold; z-index: 2000; animation: blinker 1.5s linear infinite; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+@keyframes blinker { 50% { opacity: 0.4; } }
+.detail-gallery { display: flex; overflow-x: auto; gap: 10px; margin: 15px 0; scrollbar-width: none; }
+.detail-gallery::-webkit-scrollbar { display: none; }
+.detail-gallery img { width: 250px; height: 180px; object-fit: cover; border-radius: 15px; flex-shrink: 0; }
+.review-item { background: #f9f9f9; padding: 10px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid #FF4D00; }
